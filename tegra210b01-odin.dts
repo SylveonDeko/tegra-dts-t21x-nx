@@ -1,9 +1,9 @@
-// SPDX-License-Identifier: GPL-2.0-only
-// SPDX-FileCopyrightText: Copyright (C) 2025 The LineageOS Project
-
+// SPDX-License-Identifier: GPL-2.0
 /dts-v1/;
 
-#include "tegra210b01-nx-common.dtsi"
+#include "tegra210b01-nx.dtsi"
 
 / {
+	model = "Nintendo Switch (2019)";
+	compatible = "nvidia,modin", "nvidia,odin", "nintendo,iowa", "nintendo,nx", "nvidia,tegra210b01", "nvidia,tegra210";
 };
