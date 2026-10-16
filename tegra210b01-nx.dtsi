@@ -2,6 +2,7 @@
 #include <dt-bindings/mfd/max77620.h>
 #include <dt-bindings/thermal/thermal.h>
 #include <dt-bindings/input/input.h>
+#include <dt-bindings/pinctrl/pinctrl-tegra-io-pad.h>
 #include <dt-bindings/soc/tegra-pmc.h>
 #include <dt-bindings/sound/rt5640.h>
 
@@ -1922,7 +1923,24 @@
 		nvidia,core-pwr-off-time = <44160>;
 		nvidia,core-power-req-active-high;
 		nvidia,sys-clock-req-active-high;
+		pinctrl-names = "default";
+		pinctrl-0 = <&pmc_audio_hv &pmc_spi_hv &pmc_gpio>;
 		status = "okay";
+
+		pmc_audio_hv: audio-hv {
+			pins = "audio-hv";
+			power-source = <TEGRA_IO_PAD_VOLTAGE_1V8>;
+		};
+
+		pmc_spi_hv: spi-hv {
+			pins = "spi-hv";
+			power-source = <TEGRA_IO_PAD_VOLTAGE_1V8>;
+		};
+
+		pmc_gpio: gpio {
+			pins = "gpio";
+			power-source = <TEGRA_IO_PAD_VOLTAGE_1V8>;
+		};
 
 		bootrom-commands {
 			reset-commands {

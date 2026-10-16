@@ -9,6 +9,7 @@
 #include <dt-bindings/input/input.h>
 #include <dt-bindings/pwm/pwm.h>
 #include <dt-bindings/pinctrl/pinctrl-tegra.h>
+#include <dt-bindings/pinctrl/pinctrl-tegra-io-pad.h>
 #include <dt-bindings/sound/rt5640.h>
 
 #include "tegra210.dtsi"
@@ -252,7 +253,29 @@
 	};
 
 	pmc: pmc@7000e400 {
+		pinctrl-names = "default";
+		pinctrl-0 = <&pmc_audio_hv &pmc_spi_hv &pmc_gpio &pmc_sdmmc3>;
 		status = "okay";
+
+		pmc_audio_hv: audio-hv {
+			pins = "audio-hv";
+			power-source = <TEGRA_IO_PAD_VOLTAGE_1V8>;
+		};
+
+		pmc_spi_hv: spi-hv {
+			pins = "spi-hv";
+			power-source = <TEGRA_IO_PAD_VOLTAGE_1V8>;
+		};
+
+		pmc_gpio: gpio {
+			pins = "gpio";
+			power-source = <TEGRA_IO_PAD_VOLTAGE_1V8>;
+		};
+
+		pmc_sdmmc3: sdmmc3 {
+			pins = "sdmmc3";
+			power-source = <TEGRA_IO_PAD_VOLTAGE_1V8>;
+		};
 	};
 
 	clk32k_in: clock-32k {
