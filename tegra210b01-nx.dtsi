@@ -2,6 +2,7 @@
 #include <dt-bindings/mfd/max77620.h>
 #include <dt-bindings/thermal/thermal.h>
 #include <dt-bindings/input/input.h>
+#include <dt-bindings/soc/tegra-pmc.h>
 #include <dt-bindings/sound/rt5640.h>
 
 #include "tegra210b01.dtsi"
@@ -211,8 +212,10 @@
 			reg = <0x1c>;
 			interrupt-parent = <&gpio>;
 			interrupts = <TEGRA_GPIO(BB, 4) IRQ_TYPE_EDGE_RISING>;
-			clocks = <&tegra_car TEGRA210_CLK_EXTERN1>;
+			clocks = <&tegra_pmc TEGRA_PMC_CLK_OUT_1>;
 			clock-names = "mclk";
+			assigned-clocks = <&tegra_pmc TEGRA_PMC_CLK_OUT_1>;
+			assigned-clock-parents = <&tegra_car TEGRA210_CLK_EXTERN1>;
 			realtek,ldo1-en-gpios = <&gpio TEGRA_GPIO(Z, 4) GPIO_ACTIVE_HIGH>;
 			realtek,over-current-threshold-microamp = <600>;
 			realtek,over-current-scale-factor = <2>;
