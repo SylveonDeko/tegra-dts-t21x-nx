@@ -1514,4 +1514,51 @@
 			vddio-supply = <&max77620_sd3>;
 		};
 	};
+
+	gpio@6000d000 {
+		boot-default-input {
+			gpio-hog;
+			input;
+			gpios = <
+				TEGRA_GPIO(E, 6) GPIO_ACTIVE_LOW /* Joycon (L) Wake Detect */
+				TEGRA_GPIO(H, 6) GPIO_ACTIVE_LOW /* Joycon (R) Wake Detect */
+				TEGRA_GPIO(Y, 1) GPIO_ACTIVE_LOW /* Home Button (RCM) */
+				TEGRA_GPIO(S, 1) GPIO_ACTIVE_LOW /* Charger IC (BQ24193) Battery Charge Status */
+				TEGRA_GPIO(S, 3) GPIO_ACTIVE_LOW /* Gamecard Detect */
+				TEGRA_GPIO(Z, 3) GPIO_ACTIVE_LOW /* SD Card Write Protected */
+				TEGRA_GPIO(H, 2) GPIO_ACTIVE_LOW /* Wi-Fi Wake Host */
+				TEGRA_GPIO(K, 0) GPIO_ACTIVE_HIGH /* Bluetooth Gpio2 */
+				TEGRA_GPIO(K, 1) GPIO_ACTIVE_HIGH /* Bluetooth Gpio3 */
+				TEGRA_GPIO(K, 2) GPIO_ACTIVE_HIGH /* Bluetooth Gpio4 */
+				TEGRA_GPIO(E, 7) GPIO_ACTIVE_HIGH /* Sio IRQ */
+				TEGRA_GPIO(J, 4) GPIO_ACTIVE_HIGH /* NFC IRQ */
+				TEGRA_GPIO(C, 5) GPIO_ACTIVE_HIGH /* SPI4 SCLK (Used by SIO) */
+				TEGRA_GPIO(C, 6) GPIO_ACTIVE_HIGH /* SPI4 CS0  (Used by SIO) */
+				TEGRA_GPIO(C, 7) GPIO_ACTIVE_HIGH /* SPI4 MOSI (Used by SIO) */
+				TEGRA_GPIO(D, 0) GPIO_ACTIVE_HIGH /* SPI4 MISO (Used by SIO) */
+				TEGRA_GPIO(E, 0) GPIO_ACTIVE_HIGH /* Debug 0 */
+				TEGRA_GPIO(E, 1) GPIO_ACTIVE_HIGH /* Debug 1 */
+				TEGRA_GPIO(E, 2) GPIO_ACTIVE_HIGH /* Debug 2 */
+				TEGRA_GPIO(E, 3) GPIO_ACTIVE_HIGH /* Debug 3 */
+			>;
+			line-name = "boot-default-input";
+		};
+
+		boot-default-output-low {
+			gpio-hog;
+			output-low;
+			gpios = <
+				TEGRA_GPIO(BB, 3) GPIO_ACTIVE_HIGH /* Gamecard Reset */
+				TEGRA_GPIO(V, 5) GPIO_ACTIVE_HIGH /* USB-PD (BM92T36) Reset */
+				TEGRA_GPIO(J, 5) GPIO_ACTIVE_HIGH /* Charger IC (BQ24193) Charge Select 1 */
+				TEGRA_GPIO(L, 0) GPIO_ACTIVE_HIGH /* Charger IC (BQ24193) Charge Select 2 */
+				TEGRA_GPIO(H, 0) GPIO_ACTIVE_HIGH /* Wi-Fi RF Disable */
+				TEGRA_GPIO(H, 7) GPIO_ACTIVE_HIGH /* TODO: What's this? Bluetooth Gpio5 */
+				TEGRA_GPIO(T, 0) GPIO_ACTIVE_HIGH /* Sio BOOT0 */
+				TEGRA_GPIO(J, 6) GPIO_ACTIVE_HIGH /* NFC Power enable */
+				TEGRA_GPIO(K, 7) GPIO_ACTIVE_HIGH /* NFC Reset */
+			>;
+			line-name = "boot-default-output-low";
+		};
+	};
 };
