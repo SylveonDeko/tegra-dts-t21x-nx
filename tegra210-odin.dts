@@ -2257,4 +2257,10 @@
 			status = "okay";
 		};
 	};
+
+	i2c@7000c400 {
+		bh1730fvc@29 {
+			status = "okay";
+		};
+	};
 };

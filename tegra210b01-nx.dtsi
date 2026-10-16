@@ -288,6 +288,35 @@
 		};
    	};
 
+	/* i2c2 @ 400000hz
+	29: rohm ambient light sensor
+	*/
+	i2c@7000c400 {
+		status = "okay";
+		clock-frequency = <400000>;
+
+		bh1730fvc: bh1730fvc@29 {
+			status = "disabled";
+			compatible = "rohm,bh1730fvc";
+			reg = <0x29>;
+			als-vid-supply = <&max77620_ldo6>;
+			als-vdd-supply = <&vdd_3v3>;
+			rohm,integration-cycle = <38>;
+			rohm,lux-multiplier = <3600>;
+
+			rohm,opt-win-coeff = < 500 5002 7502
+					       754 2250 2000
+					      1029 1999 1667
+					      1373  884  583
+					      1879  309  165>;
+
+			rohm,gain-coeff = < 2500     0
+					    1600  7800
+					      10 50000
+					       0  1000>;
+		};
+	};
+
 	/* i2c3 @ 400000hz
 	49: stm touchscreen controller
 	*/
