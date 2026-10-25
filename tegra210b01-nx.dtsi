@@ -16,6 +16,34 @@
 
 	chosen {
 		stdout-path = "serial0:115200n8";
+
+		framebuffer {
+			compatible = "simple-framebuffer";
+			status = "disabled";
+			memory-region = <&bootloader_fb>;
+			width = <720>;
+			height = <1280>;
+			stride = <2880>;
+			format = "a8b8g8r8";
+			clocks = <&tegra_car TEGRA210_CLK_DISP1>,
+				 <&tegra_car TEGRA210_CLK_DSIA>,
+				 <&tegra_car TEGRA210_CLK_DSIALP>,
+				 <&tegra_car TEGRA210_CLK_PLL_D_OUT0>,
+				 <&tegra_car TEGRA210_CLK_PWM>;
+			power-domains = <&pd_sor>;
+		};
+	};
+
+	reserved-memory {
+		#address-cells = <2>;
+		#size-cells = <2>;
+		ranges;
+
+		bootloader_fb: framebuffer@f5a00000 {
+			reg = <0x0 0xf5a00000 0x0 0x400000>;
+			iommu-addresses = <&dc_dsi 0x0 0xf5a00000 0x0 0x400000>;
+			no-map;
+		};
 	};
 
 	gpio-keys {
@@ -2057,8 +2085,9 @@
 			status = "disabled";
 		};
 
-		dc@54200000 {
+		dc_dsi: dc@54200000 {
 			status = "okay";
+			memory-region = <&bootloader_fb>;
 
 			// pinctrl-names = "pad_ab_default", "pad_ab_idle",
 			// 	"pad_cd_default", "pad_cd_idle";
