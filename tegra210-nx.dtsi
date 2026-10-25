@@ -728,7 +728,7 @@
 	};
 
 	spi@7000da00 {
-		status = "disabled"; /* Disabled for Vali */
+		status = "okay";
 		num-cs = <1>;
 
 		#address-cells = <1>;
@@ -744,8 +744,9 @@
 		*/
 		gyroscope: imu@0 {
 			reg = <0>;
-			status = "disabled";
-			compatible = "st,lsm6ds3h";
+			status = "okay";
+			compatible = "invensense,icm42607p", "invensense,icm40607",
+				     "st,lsm6ds3h", "st,lsm6dse", "st,lsm6dso";
 
 			#address-cells = <1>;
 			#size-cells = <0>;
@@ -769,29 +770,9 @@
 
 
 			mount-matrix =
-				"1", "0",  "0", /* X:  x */
-				"0", "1",  "0", /* Y:  y */
-				"0", "0",  "1"; /* Z:  z */
-		};
-	};
-
-	gpio-keys {
-		compatible = "gpio-keys";
-
-		key-volume-down {
-			label = "Volume Down";
-			gpios = <&gpio TEGRA_GPIO(X, 7) GPIO_ACTIVE_LOW>;
-			linux,input-type = <EV_KEY>;
-			linux,code = <KEY_VOLUMEDOWN>;
-			debounce-interval = <10>;
-		};
-
-		key-volume-up {
-			label = "Volume Up";
-			gpios = <&gpio TEGRA_GPIO(X, 6) GPIO_ACTIVE_LOW>;
-			linux,input-type = <EV_KEY>;
-			linux,code = <KEY_VOLUMEUP>;
-			debounce-interval = <10>;
+				"0", "-1", "0",
+				"1",  "0", "0",
+				"0",  "0", "1";
 		};
 	};
 
