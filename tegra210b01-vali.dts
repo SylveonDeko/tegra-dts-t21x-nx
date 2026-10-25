@@ -1465,6 +1465,14 @@
 		dc@54240000 {
 			status = "disabled";
 		};
+
+		dpaux@54040000 {
+			status = "disabled";
+		};
+
+		sor@54580000 {
+			status = "disabled";
+		};
 	};
 
 	xusb: usb@70090000 {

@@ -2328,6 +2328,18 @@
 
 			nvidia,outputs = <&sor1>;
 		};
+
+		dpaux1: dpaux@54040000 {
+			status = "okay";
+		};
+
+		sor1: sor@54580000 {
+			status = "okay";
+			nvidia,dpaux = <&dpaux1>;
+
+			avdd-io-hdmi-dp-supply = <&max77620_ldo8>;
+			vdd-hdmi-dp-pll-supply = <&max77620_sd3>;
+		};
 	};
 
 	tegra_clk_dfll: clock@70110000 {
