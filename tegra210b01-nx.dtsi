@@ -223,6 +223,10 @@
 	mmc@700b0000 {
 		status = "okay";
 		bus-width = <4>;
+		assigned-clocks = <&tegra_car TEGRA210_CLK_SDMMC1>,
+				  <&tegra_car TEGRA210_CLK_PLL_C4>;
+		assigned-clock-parents = <&tegra_car TEGRA210_CLK_PLL_C4_OUT0>;
+		assigned-clock-rates = <0>, <998400000>;
 
 		cap-sd-highspeed;
 		sd-uhs-sdr12;
