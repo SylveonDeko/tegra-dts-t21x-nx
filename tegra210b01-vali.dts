@@ -367,15 +367,6 @@
 			// 	nvidia,enable-input = <TEGRA_PIN_DISABLE>;
 			// };
 
-			/* Fan PWM */
-			lcd_gpio2_pv4 { /* 320c */
-				nvidia,pins = "lcd_gpio2_pv4";
-				nvidia,function = "pwm1";
-				nvidia,pull = <TEGRA_PIN_PULL_NONE>;
-				nvidia,tristate = <TEGRA_PIN_DISABLE>;
-				nvidia,enable-input = <TEGRA_PIN_DISABLE>;
-			};
-
 			pwr_i2c_scl_py3 { /* 30dc */
 				nvidia,pins = "pwr_i2c_scl_py3";
 				nvidia,function = "i2cpmu";

@@ -94,7 +94,7 @@
 		fan-supply = <&v_vdd50_a>;
 		enable-gpios = <&gpio TEGRA_GPIO(A, 5) GPIO_ACTIVE_HIGH>;
 		/* cooling level (0, 1, 2, 3, 4, 5) - pwm inverted */
-		cooling-levels = <255 204 153 102 51 0>;
+		cooling-levels = <255 204 153 102 51 1>;
 
 		interrupt-parent = <&gpio>;
 		interrupts = <TEGRA_GPIO(S, 7) IRQ_TYPE_EDGE_RISING>;
@@ -114,6 +114,31 @@
 	pwm@7000a000 {
 		status = "okay";
 		#pwm-cells = <2>;
+		pinctrl-names = "default", "sleep";
+		pinctrl-0 = <&fan_pwm_default>;
+		pinctrl-1 = <&fan_pwm_sleep>;
+	};
+
+	pinmux@700008d4 {
+		fan_pwm_default: fan-pwm-default {
+			lcd_gpio2_pv4 {
+				nvidia,pins = "lcd_gpio2_pv4";
+				nvidia,function = "pwm1";
+				nvidia,pull = <TEGRA_PIN_PULL_NONE>;
+				nvidia,tristate = <TEGRA_PIN_DISABLE>;
+				nvidia,enable-input = <TEGRA_PIN_DISABLE>;
+			};
+		};
+
+		fan_pwm_sleep: fan-pwm-sleep {
+			lcd_gpio2_pv4 {
+				nvidia,pins = "lcd_gpio2_pv4";
+				nvidia,function = "pwm1";
+				nvidia,pull = <TEGRA_PIN_PULL_UP>;
+				nvidia,tristate = <TEGRA_PIN_ENABLE>;
+				nvidia,enable-input = <TEGRA_PIN_DISABLE>;
+			};
+		};
 	};
 
 	serial@70006000 {
@@ -1810,6 +1835,12 @@
 			"x IN1P",             "x Mic Jack";
 	};
 
+	cpus {
+		cpu@0 {
+			#cooling-cells = <2>;
+		};
+	};
+
 	thermal-zones {
 
 		cpu-thermal {
@@ -1818,6 +1849,12 @@
 			status = "okay";
 
 			trips {
+				cpu_trip_throttle: throttle {
+					temperature = <85000>;
+					hysteresis = <3000>;
+					type = "passive";
+				};
+
 				cpu_trip_critical: critical {
 					temperature = <96500>;
 					hysteresis = <0>;
@@ -1825,43 +1862,135 @@
 				};
 
 				cpu_trip_hot: hot {
-					temperature = <70000>;
+					temperature = <90000>;
 					hysteresis = <2000>;
 					type = "hot";
 				};
 
-				cpu_trip_active: active {
-					temperature = <50000>;
-					hysteresis = <2000>;
+				cpu_fan_trip0: fan-trip0 {
+					temperature = <42000>;
+					hysteresis = <3000>;
 					type = "active";
 				};
 
-				cpu_trip_passive: passive {
-					temperature = <30000>;
-					hysteresis = <2000>;
-					type = "passive";
+				cpu_fan_trip1: fan-trip1 {
+					temperature = <50000>;
+					hysteresis = <3000>;
+					type = "active";
+				};
+
+				cpu_fan_trip2: fan-trip2 {
+					temperature = <57000>;
+					hysteresis = <3000>;
+					type = "active";
+				};
+
+				cpu_fan_trip3: fan-trip3 {
+					temperature = <64000>;
+					hysteresis = <3000>;
+					type = "active";
+				};
+
+				cpu_fan_trip4: fan-trip4 {
+					temperature = <70000>;
+					hysteresis = <3000>;
+					type = "active";
 				};
 			};
 
 			cooling-maps {
 				map0 {
-					cooling-device = <&fan 3 3>;
-					trip = <&cpu_trip_critical>;
+					cooling-device = <&fan 1 1>;
+					trip = <&cpu_fan_trip0>;
 				};
 
 				map1 {
 					cooling-device = <&fan 2 2>;
-					trip = <&cpu_trip_hot>;
+					trip = <&cpu_fan_trip1>;
 				};
 
 				map2 {
-					cooling-device = <&fan 1 1>;
-					trip = <&cpu_trip_active>;
+					cooling-device = <&fan 3 3>;
+					trip = <&cpu_fan_trip2>;
 				};
 
 				map3 {
-					cooling-device = <&fan 0 0>;
-					trip = <&cpu_trip_passive>;
+					cooling-device = <&fan 4 4>;
+					trip = <&cpu_fan_trip3>;
+				};
+
+				map4 {
+					cooling-device = <&fan 5 5>;
+					trip = <&cpu_fan_trip4>;
+				};
+
+				map5 {
+					cooling-device = <&{/cpus/cpu@0} THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
+					trip = <&cpu_trip_throttle>;
+				};
+			};
+		};
+
+		gpu-thermal {
+			polling-delay-passive = <250>;
+			polling-delay = <500>;
+
+			trips {
+				gpu_fan_trip0: fan-trip0 {
+					temperature = <42000>;
+					hysteresis = <3000>;
+					type = "active";
+				};
+
+				gpu_fan_trip1: fan-trip1 {
+					temperature = <50000>;
+					hysteresis = <3000>;
+					type = "active";
+				};
+
+				gpu_fan_trip2: fan-trip2 {
+					temperature = <57000>;
+					hysteresis = <3000>;
+					type = "active";
+				};
+
+				gpu_fan_trip3: fan-trip3 {
+					temperature = <64000>;
+					hysteresis = <3000>;
+					type = "active";
+				};
+
+				gpu_fan_trip4: fan-trip4 {
+					temperature = <70000>;
+					hysteresis = <3000>;
+					type = "active";
+				};
+			};
+
+			cooling-maps {
+				map1 {
+					cooling-device = <&fan 1 1>;
+					trip = <&gpu_fan_trip0>;
+				};
+
+				map2 {
+					cooling-device = <&fan 2 2>;
+					trip = <&gpu_fan_trip1>;
+				};
+
+				map3 {
+					cooling-device = <&fan 3 3>;
+					trip = <&gpu_fan_trip2>;
+				};
+
+				map4 {
+					cooling-device = <&fan 4 4>;
+					trip = <&gpu_fan_trip3>;
+				};
+
+				map5 {
+					cooling-device = <&fan 5 5>;
+					trip = <&gpu_fan_trip4>;
 				};
 			};
 		};

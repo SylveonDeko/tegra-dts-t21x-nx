@@ -61,6 +61,7 @@
 
 		cpu@0 {
 			vdd-cpu-supply = <&cpu_max_reg>;
+			#cooling-cells = <2>;
 		};
 
 		idle-states {
@@ -806,6 +807,31 @@
 	pwm@7000a000 {
 		status = "okay";
 		#pwm-cells = <2>;
+		pinctrl-names = "default", "sleep";
+		pinctrl-0 = <&fan_pwm_default>;
+		pinctrl-1 = <&fan_pwm_sleep>;
+	};
+
+	pinmux@700008d4 {
+		fan_pwm_default: fan-pwm-default {
+			lcd_gpio2_pv4 {
+				nvidia,pins = "lcd_gpio2_pv4";
+				nvidia,function = "pwm1";
+				nvidia,pull = <TEGRA_PIN_PULL_NONE>;
+				nvidia,tristate = <TEGRA_PIN_DISABLE>;
+				nvidia,enable-input = <TEGRA_PIN_DISABLE>;
+			};
+		};
+
+		fan_pwm_sleep: fan-pwm-sleep {
+			lcd_gpio2_pv4 {
+				nvidia,pins = "lcd_gpio2_pv4";
+				nvidia,function = "pwm1";
+				nvidia,pull = <TEGRA_PIN_PULL_UP>;
+				nvidia,tristate = <TEGRA_PIN_ENABLE>;
+				nvidia,enable-input = <TEGRA_PIN_DISABLE>;
+			};
+		};
 	};
 
   	fan: pwm-fan {
@@ -817,7 +843,7 @@
 		fan-supply = <&v_vdd50_a>;
 		enable-gpios = <&gpio TEGRA_GPIO(A, 5) GPIO_ACTIVE_HIGH>;
 		/* cooling level (0, 1, 2, 3, 4, 5) - pwm inverted */
-		cooling-levels = <255 204 153 102 51 0>;
+		cooling-levels = <255 204 153 102 51 1>;
 	};
 
 	aconnect@702c0000 {
@@ -1990,32 +2016,38 @@
 				};
 
 				cpu_throttle: cpu-throttle {
-					temperature = <89000>;
-					hysteresis = <2000>;
+					temperature = <85000>;
+					hysteresis = <3000>;
 					type = "passive";
 				};
 
-				cpu_cap_trip1: cpu-cap-trip1 {
-					temperature = <58000>;
-					hysteresis = <2000>;
+				cpu_fan_trip0: cpu-fan-trip0 {
+					temperature = <42000>;
+					hysteresis = <3000>;
 					type = "active";
 				};
 
-				cpu_floor_trip1: cpu-floor-trip1 {
-					temperature = <53000>;
-					hysteresis = <2000>;
+				cpu_fan_trip1: cpu-fan-trip1 {
+					temperature = <50000>;
+					hysteresis = <3000>;
 					type = "active";
 				};
 
-				cpu_cap_trip0: cpu-cap-trip0 {
-					temperature = <48000>;
-					hysteresis = <2000>;
+				cpu_fan_trip2: cpu-fan-trip2 {
+					temperature = <57000>;
+					hysteresis = <3000>;
 					type = "active";
 				};
 
-				cpu_floor_trip0: cpu-floor-trip0 {
-					temperature = <43000>;
-					hysteresis = <2000>;
+				cpu_fan_trip3: cpu-fan-trip3 {
+					temperature = <64000>;
+					hysteresis = <3000>;
+					type = "active";
+				};
+
+				cpu_fan_trip4: cpu-fan-trip4 {
+					temperature = <70000>;
+					hysteresis = <3000>;
 					type = "active";
 				};
 			};
@@ -2032,70 +2064,33 @@
 				};
 
 				map2 {
-					cooling-device = <&fan THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
+					cooling-device = <&{/cpus/cpu@0} THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
 					trip = <&cpu_throttle>;
 				};
 
 				map3 {
 					cooling-device = <&fan 1 1>;
-					trip = <&cpu_cap_trip1>;
+					trip = <&cpu_fan_trip0>;
 				};
 
 				map4 {
 					cooling-device = <&fan 2 2>;
-					trip = <&cpu_floor_trip1>;
+					trip = <&cpu_fan_trip1>;
 				};
 
 				map5 {
 					cooling-device = <&fan 3 3>;
-					trip = <&cpu_cap_trip0>;
+					trip = <&cpu_fan_trip2>;
 				};
 
 				map6 {
 					cooling-device = <&fan 4 4>;
-					trip = <&cpu_floor_trip0>;
-				};
-			};
-		};
-
-		gpu {
-			polling-delay-passive = <250>;
-			polling-delay = <500>;
-			status = "okay";
-			thermal-sensors = <&tmp451 1>;
-
-			trips {
-				gpu_critical: gpu-critical {
-					temperature = <103000>;
-					hysteresis = <0>;
-					type = "critical";
+					trip = <&cpu_fan_trip3>;
 				};
 
-				gpu_heavy: gpu-heavy {
-					temperature = <100000>;
-					hysteresis = <1000>;
-					type = "hot";
-				};
-
-				gpu_throttle: gpu-throttle {
-					temperature = <90500>;
-					hysteresis = <0>;
-					type = "passive";
-				};
-			};
-
-			cooling-maps {
-				map0 {
-					trip = <&gpu_critical>;
-					cooling-device = <&fan THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-				};
-				map1 {
-					trip = <&gpu_heavy>;
-					cooling-device = <&fan THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-				};
-				map2 {
-					trip = <&gpu_throttle>;
-					cooling-device = <&fan THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
+				map7 {
+					cooling-device = <&fan 5 5>;
+					trip = <&cpu_fan_trip4>;
 				};
 			};
 		};
