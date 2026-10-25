@@ -85,8 +85,6 @@
 			gpio-hog;
 			input;
 			gpios = <
-				TEGRA_GPIO(E, 6) GPIO_ACTIVE_LOW /* Joycon (L) Wake Detect */
-				TEGRA_GPIO(H, 6) GPIO_ACTIVE_LOW /* Joycon (R) Wake Detect */
 				TEGRA_GPIO(X, 5) GPIO_ACTIVE_HIGH /* Power Button (Not connected) */
 				TEGRA_GPIO(Y, 1) GPIO_ACTIVE_LOW /* Home Button (RCM) */
 				TEGRA_GPIO(S, 1) GPIO_ACTIVE_LOW /* Charger IC (BQ24193) Battery Charge Status */

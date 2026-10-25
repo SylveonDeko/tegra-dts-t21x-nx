@@ -11,6 +11,8 @@
 / {
 	aliases {
 		serial0 = &uarta;
+		serial1 = &uartb;
+		serial2 = &uartc;
 		serial3 = &uartd;
 	};
 
@@ -118,6 +120,58 @@
 		/delete-property/ dmas;
 		/delete-property/ dma-names;
 		status = "okay";
+	};
+
+	serial@70006040 {
+		status = "okay";
+		compatible = "nvidia,tegra124-hsuart", "nvidia,tegra30-hsuart";
+		nvidia,invert-txd;
+		nvidia,invert-rts;
+		reset-names = "serial";
+
+		joyconr {
+			status = "okay";
+			compatible = "nintendo,joycon-serdev";
+			charger-supply = <&en_vdd_jcr_chgr>;
+			detect-en-gpios = <&gpio TEGRA_GPIO(G, 0) GPIO_ACTIVE_HIGH>;
+			detect-gpios = <&gpio TEGRA_GPIO(H, 6) GPIO_ACTIVE_LOW>;
+		};
+	};
+
+	serial@70006200 {
+		status = "okay";
+		compatible = "nvidia,tegra124-hsuart", "nvidia,tegra30-hsuart";
+		nvidia,invert-txd;
+		nvidia,invert-rts;
+		reset-names = "serial";
+
+		joyconl {
+			status = "okay";
+			compatible = "nintendo,joycon-serdev";
+			charger-supply = <&en_vdd_jcl_chgr>;
+			detect-en-gpios = <&gpio TEGRA_GPIO(D, 1) GPIO_ACTIVE_HIGH>;
+			detect-gpios = <&gpio TEGRA_GPIO(E, 6) GPIO_ACTIVE_LOW>;
+		};
+
+		sio {
+			status = "disabled";
+			compatible = "nintendo,joycon-serdev";
+			nintendo,sio;
+			nintendo,sio-home-gpio = <&gpio TEGRA_GPIO(V, 3) GPIO_ACTIVE_LOW>;
+			nintendo,sio-por-gpio = <&gpio TEGRA_GPIO(CC, 5) GPIO_ACTIVE_HIGH>;
+			nintendo,sio-rst-gpio = <&gpio TEGRA_GPIO(T, 1) GPIO_ACTIVE_HIGH>;
+
+			sio-stick-cnt-off-l = <0 0xFFFFFF00>;
+			sio-stick-cnt-off-r = <0xFFFFFF00 0>;
+
+			clocks = <&tegra_pmc TEGRA_PMC_CLK_OUT_2>;
+			clock-names = "sio";
+			assigned-clocks = <&tegra_car TEGRA210_CLK_EXTERN2>,
+					  <&tegra_pmc TEGRA_PMC_CLK_OUT_2>;
+			assigned-clock-parents = <&tegra_car TEGRA210_CLK_PLL_P>,
+						 <&tegra_car TEGRA210_CLK_EXTERN2>;
+			assigned-clock-rates = <4000000>, <0>;
+		};
 	};
 
 	serial@70006300 {

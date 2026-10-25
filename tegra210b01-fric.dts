@@ -7,10 +7,6 @@
 	model = "Nintendo Switch (OLED model)";
 	compatible = "nvidia,fric", "nintendo,aula", "nintendo,nx", "nvidia,tegra210b01", "nvidia,tegra210";
 
-	aliases {
-		serial1 = &uartb;
-	};
-
 	pinmux: pinmux@700008d4 {
 		status = "okay";
 		pinctrl-names = "default";
@@ -1453,12 +1449,6 @@
 		hvdd-pex-pll-e-supply = <&max77620_sd3>;
 	};
 
-	serial@70006040 {
-		/delete-property/ dmas;
-		/delete-property/ dma-names;
-		status = "okay";
-	};
-
 	serial@70006300 {
 		bluetooth {
 			vbat-supply = <&battery_reg>;
@@ -1471,8 +1461,6 @@
 			gpio-hog;
 			input;
 			gpios = <
-				TEGRA_GPIO(E, 6) GPIO_ACTIVE_LOW /* Joycon (L) Wake Detect */
-				TEGRA_GPIO(H, 6) GPIO_ACTIVE_LOW /* Joycon (R) Wake Detect */
 				TEGRA_GPIO(Y, 1) GPIO_ACTIVE_LOW /* Home Button (RCM) */
 				TEGRA_GPIO(S, 1) GPIO_ACTIVE_LOW /* Charger IC (BQ24193) Battery Charge Status */
 				TEGRA_GPIO(S, 3) GPIO_ACTIVE_LOW /* Gamecard Detect */
