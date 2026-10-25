@@ -102,10 +102,30 @@
 	};
 
 	host1x@50000000 {
+		vic@54340000 {
+			status = "disabled";
+		};
+		nvjpg@54380000 {
+			status = "disabled";
+		};
+		nvdec@54480000 {
+			status = "disabled";
+		};
+		nvenc@544c0000 {
+			status = "disabled";
+		};
+
 		dsia: dsi@54300000 {
 			status = "okay";
 
+			avdd-dsi-csi-supply = <&max77620_gpio7>;
+
 			panel@0 {
+				reg = <0>;
+				status = "okay";
+
+				rotation = <270>;
+
 				compatible = "nintendo,panel-nx-dsi";
 				reset-gpios = <&gpio TEGRA_GPIO(V, 2) GPIO_ACTIVE_HIGH>;
 				backlight = <&backlight>;
@@ -115,12 +135,12 @@
 		};
 
 		/* tegradc.0: DSI */
-		dc@54200000 {
+		dc_dsi: dc@54200000 {
 			status = "okay";
+			memory-region = <&bootloader_fb>;
 			pavdd_lcd-supply = <&v_pavdd_5v0>;
 			navdd_lcd-supply = <&v_navdd_5v0>;
 			dvdd_lcd-supply = <&max77620_sd3>;
-			vdd_lcd_bl_en-supply = <&lcd_bl_en>;
 			nvidia,outputs = <&dsia>;
 		};
 
@@ -134,9 +154,6 @@
 			vdd-dp-pwr-supply = <&vdd_3v3>;
 			avdd-dp-pll-supply = <&max77620_sd3>;
 			vdd-dp-pad-supply = <&max77620_ldo8>;
-
-			extcon-cables = <&bm92t 3>;
-			extcon-cable-names = "typec1";
 
 			nvidia,outputs = <&sor1>;
 		};
@@ -152,8 +169,6 @@
 
 			avdd-io-hdmi-dp-supply = <&max77620_ldo8>;
 			vdd-hdmi-dp-pll-supply = <&max77620_sd3>;
-
-			nvidia,hpd-gpio = <&gpio TEGRA_GPIO(CC, 1) GPIO_ACTIVE_LOW>;
 		};
 
 		vi: i2c@546c0000 {
@@ -173,14 +188,55 @@
 		vdd-cpu-supply = <&cpu_max_reg>;
 	};
 
-	memory {
+	memory@80000000 {
 		device_type = "memory";
 		reg = <0x0 0x80000000 0x0 0x80000000>;
 	};
 
+	psci {
+		compatible = "arm,psci-1.0";
+		method = "smc";
+	};
+
 	reserved-memory {
+		#address-cells = <2>;
+		#size-cells = <2>;
+		ranges;
+
 		/delete-node/ vpr-carveout;
 		/delete-node/ iram-carveout;
+
+		bootloader_fb: framebuffer@f5a00000 {
+			reg = <0x0 0xf5a00000 0x0 0x400000>;
+			iommu-addresses = <&dc_dsi 0x0 0xf5a00000 0x0 0x400000>;
+			no-map;
+		};
+
+		ramoops@b0000000 {
+			compatible = "ramoops";
+			reg = <0x0 0xb0000000 0x0 0x200000>;
+			record-size = <0x40000>;
+			console-size = <0x80000>;
+			no-map;
+		};
+	};
+
+	chosen {
+		framebuffer {
+			compatible = "simple-framebuffer";
+			status = "disabled";
+			memory-region = <&bootloader_fb>;
+			width = <720>;
+			height = <1280>;
+			stride = <2880>;
+			format = "a8b8g8r8";
+			clocks = <&tegra_car TEGRA210_CLK_DISP1>,
+				 <&tegra_car TEGRA210_CLK_DSIA>,
+				 <&tegra_car TEGRA210_CLK_DSIALP>,
+				 <&tegra_car TEGRA210_CLK_PLL_D_OUT0>,
+				 <&tegra_car TEGRA210_CLK_PWM>;
+			power-domains = <&pd_sor>;
+		};
 	};
 
 	r2p {
@@ -339,18 +395,6 @@
 		vin-supply = <&max77620_ldo0>;
 	};
 
-	lcd_bl_en: regulator@3 {
-		compatible = "regulator-fixed";
-		reg = <3>;
-		status = "okay"; /* Only enabled on Odin/Modin/Vali */
-		regulator-name = "lcd-bl-en";
-		regulator-min-microvolt = <1800000>;
-		regulator-max-microvolt = <1800000>;
-		gpio = <&gpio TEGRA_GPIO(V, 1) 0>;
-		regulator-boot-on; /* Must be set for seamless display */
-		enable-active-high;
-	};
-
 	vdd_touch: regulator-touch-vdd {
 		compatible = "regulator-fixed";
 		regulator-name = "touch-vdd";
@@ -425,7 +469,7 @@
 	v_vdd5v3: regulator@0xb {
 		compatible = "regulator-fixed";
 		reg = <11>;
-		status = "okay"; /* Only enabled on Modin/Vali/Fric */
+		status = "disabled"; /* Only enabled on Modin/Vali/Fric */
 		regulator-name = "v_vdd5v3";
 		regulator-min-microvolt = <5300000>;
 		regulator-max-microvolt = <5300000>;
@@ -573,7 +617,6 @@
 			interrupts = <TEGRA_GPIO(Z, 0) IRQ_TYPE_LEVEL_LOW>;
 
 			monitored-battery = <&fuel_gauge>;
-			#extcon-cells = <1>;
 
 			omit-battery-class;
 
@@ -637,7 +680,6 @@
 			interrupt-parent = <&gpio>;
 			interrupts = <TEGRA_GPIO(K, 4) IRQ_TYPE_LEVEL_LOW>;
 			pd_bat_chg-supply = <&battery_charger>;
-			vbus-source-supply = <&v_vdd5v3>;
 			vbus-supply = <&usb0_vbus>;
 
 			rohm,dp-lanes = <2>;
@@ -1959,7 +2001,7 @@
 		       /* I/O DAP Ports */
 		       <&i2s1_port>/*, <&i2s2_port>*/;
 
-		label = "Nintendo-Switch-rt5640-APE";
+		label = "switch-ape-rt5640";
 
 		widgets = "Microphone",	"x Mic Jack",
 			  "Headphone",	"x Headphone Jack",

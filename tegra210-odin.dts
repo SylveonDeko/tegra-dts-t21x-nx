@@ -149,7 +149,7 @@
 				nvidia,function = "i2s1";
 				nvidia,pull = <TEGRA_PIN_PULL_DOWN>;
 				nvidia,tristate = <TEGRA_PIN_ENABLE>;
-				nvidia,enable-input = <TEGRA_PIN_DISABLE>;
+				nvidia,enable-input = <TEGRA_PIN_ENABLE>;
 			};
 
 			dap1_dout_pb2 { /* 312c */
@@ -2086,35 +2086,8 @@
 		nvidia,cpu-pwr-off-time = <0>;
 		nvidia,core-pwr-good-time = <13092 7752>;
 		nvidia,core-pwr-off-time = <44188>;
-		nvidia,core-pwr-req-active-high;
+		nvidia,core-power-req-active-high;
 		nvidia,sys-clock-req-active-high;
-
-		iopad-defaults {
-			audio-hv-pads {
-				pins = "audio-hv";
-				power-source = <TEGRA_IO_PAD_VOLTAGE_1V8>;
-			};
-
-			spi-hv-pads {
-				pins = "spi-hv";
-				power-source = <TEGRA_IO_PAD_VOLTAGE_1V8>;
-			};
-
-			gpio-pads {
-				pins = "gpio";
-				power-source = <TEGRA_IO_PAD_VOLTAGE_1V8>;
-			};
-
-			sdmmc1-pads {
-				pins = "sdmmc1";
-			};
-
-			sdmmc3-pads {
-				pins = "sdmmc3";
-				power-source = <TEGRA_IO_PAD_VOLTAGE_1V8>;
-				low-power-enable;
-			};
-		};
 	};
 
 	xusb: usb@70090000 {
@@ -2123,9 +2096,6 @@
 		phys = <&{/padctl@7009f000/pads/usb2/lanes/usb2-0}>,
 			<&{/padctl@7009f000/pads/pcie/lanes/pcie-6}>;
 		phy-names = "usb2-0", "usb3-0";
-
-		extcon = <&bm92t 0>;
-		extcon-cable-names = "vbus";
 
 		avdd-usb-supply = <&vdd_3v3>;
 		dvddio-pex-supply = <&max77620_ldo1>;
@@ -2205,12 +2175,11 @@
 				usb-role-switch;
 				vbus-supply = <&battery_reg>;
 
-				#address-cells = <1>;
-				#size-cells = <0>;
-
-				usb_port_0: endpoint@0 {
-					reg = <0>;
-					remote-endpoint = <&usb_con_ep>;
+				port {
+					usb_port_0: endpoint@0 {
+						reg = <0>;
+						remote-endpoint = <&usb_con_ep>;
+					};
 				};
 			};
 
@@ -2227,9 +2196,6 @@
 		phys = <&{/padctl@7009f000/pads/usb2/lanes/usb2-0}>,
 			<&{/padctl@7009f000/pads/pcie/lanes/pcie-6}>;
 		phy-names = "usb2-0", "usb3-0";
-
-		extcon = <&bm92t 1>;
-		extcon-cable-names = "id";
 
 		avddio-usb-supply = <&max77620_ldo1>;
 		hvdd-usb-supply = <&vdd_3v3>;
